@@ -7,6 +7,7 @@ import {
   Text,
 } from "react-native";
 import MapView from "react-native-maps";
+
 import * as Location from "expo-location";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
@@ -18,6 +19,8 @@ const MapScreen = () => {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [userLocation, setUserLocation] = useState({});
+  const [heatMapPoints, setheatMapPoints] = useState([]);
+
   // ------------------
   useEffect(() => {
     (async () => {
@@ -40,12 +43,30 @@ const MapScreen = () => {
 
   function setCameraPostion() {
     setUserLocation({
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
+      latitude: location?.coords?.latitude,
+      longitude: location?.coords?.longitude,
       latitudeDelta: 0.1,
       longitudeDelta: 0.1,
     });
+    setheatMapPoints([
+      {
+        latitude: location?.coords?.latitude,
+        longitude: location?.coords?.longitude,
+        weight: 1,
+      },
+      {
+        latitude: 57.697631,
+        longitude: 11.984283,
+        weight: 1,
+      },
+      {
+        latitude: 57.694977,
+        longitude: 11.991765,
+        weight: 1,
+      },
+    ]);
   }
+
   // -------------------------
 
   return (
@@ -55,7 +76,15 @@ const MapScreen = () => {
         mapType={mapType}
         showsUserLocation={true}
         region={userLocation === {} ? null : userLocation}
-      />
+      >
+        <MapView.Heatmap
+          points={heatMapPoints}
+          opacity={0.7}
+          radius={20}
+          maxIntensity={100}
+          gradientSmoothing={10}
+        ></MapView.Heatmap>
+      </MapView>
 
       <View style={styles.mapVariants}>
         {mapTypes.map((mapType) => (
