@@ -5,7 +5,6 @@ import {
   View,
   TouchableNativeFeedback,
   Text,
-  SafeAreaView
 } from "react-native";
 import MapView from "react-native-maps";
 
@@ -19,7 +18,7 @@ const MapScreen = () => {
   const mapTypes = ["Standard", "Satellite", "Terrain", "Hybrid"];
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
-  const [userLocation, setUserLocation] = useState({});
+  const [userLocation, setUserLocation] = useState(null);
   const [heatMapPoints, setheatMapPoints] = useState([]);
 
   // ------------------
@@ -37,8 +36,9 @@ const MapScreen = () => {
   }, []);
 
   useEffect(() => {
-    if (location) {
+    if (location !== null) {
       setCameraPostion();
+      setHeatMap();
     }
   }, [location]);
 
@@ -49,6 +49,9 @@ const MapScreen = () => {
       latitudeDelta: 0.1,
       longitudeDelta: 0.1,
     });
+  }
+
+  function setHeatMap() {
     setheatMapPoints([
       {
         latitude: location?.coords?.latitude,
@@ -71,22 +74,23 @@ const MapScreen = () => {
   // -------------------------
 
   return (
-    <SafeAreaView>
     <>
-      <MapView
-        style={styles.mapStyle}
-        mapType={mapType}
-        showsUserLocation={true}
-        region={userLocation === {} ? null : userLocation}
-      >
-        <MapView.Heatmap
-          points={heatMapPoints}
-          opacity={0.7}
-          radius={20}
-          maxIntensity={100}
-          gradientSmoothing={10}
-        ></MapView.Heatmap>
-      </MapView>
+      {userLocation !== null && (
+        <MapView
+          style={styles.mapStyle}
+          mapType={mapType}
+          showsUserLocation={true}
+          region={userLocation}
+        >
+          <MapView.Heatmap
+            points={heatMapPoints}
+            opacity={0.7}
+            radius={20}
+            maxIntensity={100}
+            gradientSmoothing={10}
+          ></MapView.Heatmap>
+        </MapView>
+      )}
 
       <View style={styles.mapVariants}>
         {mapTypes.map((mapType) => (
@@ -101,7 +105,6 @@ const MapScreen = () => {
         ))}
       </View>
     </>
-    </SafeAreaView>
   );
 };
 
