@@ -10,7 +10,7 @@ import { Text, Dimensions } from "react-native";
 
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import MapScreen from "../screens/MapScreen";
-import TestScreen from "../screens/TestScreen";
+import DashBoard from "../screens/DashBoard";
 
 const fullScreenWidth = Dimensions.get("window").width;
 const Stack = createNativeStackNavigator();
@@ -19,7 +19,7 @@ const Stack = createNativeStackNavigator();
 function DashboardStackScreen() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="TestScreen" component={TestScreen} />
+      <Stack.Screen name="DashBoard" component={DashBoard} />
     </Stack.Navigator>
   );
 }
