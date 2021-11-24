@@ -1,5 +1,3 @@
-// import 'react-native-gesture-handler';
-
 import React from "react";
 
 import { NavigationContainer } from "@react-navigation/native";
@@ -15,7 +13,6 @@ import DashBoard from "../screens/DashBoard";
 const fullScreenWidth = Dimensions.get("window").width;
 const Stack = createNativeStackNavigator();
 
-// change component !
 function DashboardStackScreen() {
   return (
     <Stack.Navigator>

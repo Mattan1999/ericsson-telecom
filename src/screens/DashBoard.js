@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, Text, StyleSheet, View } from "react-native";
+import { SafeAreaView, Text, StyleSheet, View, Platform } from "react-native";
 import NetInfo, { useNetInfo } from "@react-native-community/netinfo";
 
 const DashBoard = () => {
@@ -37,7 +37,6 @@ const DashBoard = () => {
           )}
         </View>
       </View>
-      
     </SafeAreaView>
   );
 };
@@ -54,12 +53,25 @@ const styles = StyleSheet.create({
     marginHorizontal: 30,
     marginVertical: 160,
     padding: 20,
-
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
     borderWidth: 2,
     borderColor: 'lightseagreen',
-    borderRadius: 20
+    borderRadius: 20,
+    ...Platform.select({
+      ios: {
+        shadowOffset: {
+          shadowColor: "#000",
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
   },
   firstColumn: {
     flex: 1,
@@ -67,6 +79,6 @@ const styles = StyleSheet.create({
   },
   secondColumn: {
     flex: 1,
-    
+    alignItems: "flex-start"
   }
 });
