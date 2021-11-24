@@ -36,6 +36,7 @@ export default function TabBar() {
     <NavigationContainer>
       <Tab.Navigator
         screenOptions={({ route }) => ({
+          tabBarHideOnKeyboard: true,
           headerShown: false,
           tabBarIcon: ({ focused, color, size, padding }) => {
             let iconName;
