@@ -108,7 +108,7 @@ const DashBoard = () => {
                 flex: 1,
               }}
             >
-              <Text style={{ alignSelf: "flex-end" }}>Has intenet: </Text>
+              <Text style={{ alignSelf: "flex-end" }}>Has internet: </Text>
             </View>
             <View
               style={{
@@ -161,7 +161,7 @@ const DashBoard = () => {
                     flex: 1,
                   }}
                 >
-                  <Text style={{ alignSelf: "flex-end" }}>IP-Adress: </Text>
+                  <Text style={{ alignSelf: "flex-end" }}>IP-Address: </Text>
                 </View>
                 <View
                   style={{
@@ -215,7 +215,7 @@ const DashBoard = () => {
                   }}
                 >
                   <Text style={{ alignSelf: "flex-end" }}>
-                    Network Frequency:{" "}
+                    Network frequency:{" "}
                   </Text>
                 </View>
                 <View

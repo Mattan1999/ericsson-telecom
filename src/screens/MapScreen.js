@@ -32,9 +32,11 @@ const MapScreen = () => {
       }
 
       // Gets location one time
-      await loadHeatMap();
+
       let loc = await Location.getCurrentPositionAsync({});
       setLocation(loc.coords);
+      setHeatMap();
+      setCameraPostion(loc.coords);
     };
     _getLocationPermissonAsync();
 
@@ -46,13 +48,6 @@ const MapScreen = () => {
       }
     };
   }, []);
-
-  useEffect(() => {
-    // Setting camera position and heat map points in map view if location is available
-    if (location !== null) {
-      setCameraPostion();
-    }
-  }, [location]);
 
   // Starts a subscription to location updates
   // - timeInterval is how often it should update the location in milliseconds
@@ -93,7 +88,6 @@ const MapScreen = () => {
         signalStrength: getRandomStrength(),
       },
     ];
-    const array = [...heatMapPoints, obj];
     console.log(heatMapPoints.length);
     setHeatMapPoints((oldArray) => [...oldArray, obj]);
   }
@@ -136,18 +130,17 @@ const MapScreen = () => {
     }
   }
 
-  function setCameraPostion() {
+  function setCameraPostion(coordinates) {
     setUserLocation({
-      latitude: location.latitude,
-      longitude: location.longitude,
-      latitudeDelta: 0.04,
-      longitudeDelta: 0.04,
+      latitude: coordinates.latitude,
+      longitude: coordinates.longitude,
+      latitudeDelta: 0.004,
+      longitudeDelta: 0.004,
     });
   }
 
-  async function loadHeatMap() {
+  async function setHeatMap() {
     const loadedHeatmap = await loadHeatmap();
-    console.log("heaetmap", loadedHeatmap.length);
     if (loadedHeatmap !== null) setHeatMapPoints(loadedHeatmap);
     else
       setHeatMapPoints([
@@ -275,7 +268,7 @@ const MapScreen = () => {
                 style={styles.mapStyle}
                 mapType={mapType}
                 showsUserLocation={true}
-                region={userLocation}
+                initialRegion={userLocation}
               >
                 {heatMapPoints.map((point, index) => (
                   <MapView.Heatmap
