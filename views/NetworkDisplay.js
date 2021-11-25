@@ -57,10 +57,10 @@ function NetworkDetails(props) {
   else if (type === "wifi" || type === "cellular") {
     return (
       <View>
-        {Object.entries(details).map((key, value) => (
-          <View style={styles.container2}>
-            <Text key={value}>{key[0]}: </Text>
-            <StringOrIcon value={key[1]}></StringOrIcon>
+        {Object.entries(details).map((value, key) => (
+          <View key={key} style={styles.container2}>
+            <Text>{value[0]}: </Text>
+            <StringOrIcon value={value[1]}></StringOrIcon>
           </View>
         ))}
       </View>
@@ -81,7 +81,7 @@ function StatusIcon(props) {
 }
 
 function WifiIcon(props) {
-  if (props.wifi) return <Icon name="check" type="evilicon" color="#00FF00" />;
+  if (props.wifi) return <Icon name="wifi" type="material" color="#000000" />;
   return null;
 }
 
