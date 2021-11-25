@@ -11,6 +11,7 @@ import MapView from "react-native-maps";
 
 import * as Location from "expo-location";
 import HeatMapIntervalSettings from "../../components/HeatMapIntervalSettings";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const MapScreen = () => {
   const [mapType, setMapType] = useState("standard");
@@ -31,6 +32,7 @@ const MapScreen = () => {
       }
 
       // Gets location one time
+      await loadHeatMap();
       let loc = await Location.getCurrentPositionAsync({});
       setLocation(loc.coords);
     };
@@ -49,7 +51,6 @@ const MapScreen = () => {
     // Setting camera position and heat map points in map view if location is available
     if (location !== null) {
       setCameraPostion();
-      setHeatMap();
     }
   }, [location]);
 
@@ -69,6 +70,8 @@ const MapScreen = () => {
         locationArguments,
         (res) => {
           setLocation(res.coords);
+          addToHeatMap(res.coords);
+          saveHeatmap();
           console.log(res.coords);
         }
       );
@@ -76,6 +79,42 @@ const MapScreen = () => {
       setLocationSubscription(subscribe);
     }
   }
+
+  function getRandomStrength() {
+    return Math.floor(Math.random() * 100);
+  }
+
+  function addToHeatMap(coordinates) {
+    const obj = [
+      {
+        latitude: coordinates.latitude,
+        longitude: coordinates.longitude,
+        weight: 1,
+        signalStrength: getRandomStrength(),
+      },
+    ];
+    const array = [...heatMapPoints, obj];
+    console.log(heatMapPoints.length);
+    setHeatMapPoints((oldArray) => [...oldArray, obj]);
+  }
+
+  async function saveHeatmap() {
+    try {
+      const string = JSON.stringify(heatMapPoints);
+      await AsyncStorage.setItem("@heatMapPoints", string);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const loadHeatmap = async () => {
+    try {
+      const string = await AsyncStorage.getItem("@heatMapPoints");
+      return string != null ? JSON.parse(string) : null;
+    } catch (e) {
+      // error reading value
+    }
+  };
 
   // Runs the 'updateLocationSubscription' function everytime the 'watchPosition' variable updates
   useEffect(() => {
@@ -106,89 +145,93 @@ const MapScreen = () => {
     });
   }
 
-  function setHeatMap() {
-    setHeatMapPoints([
-      [
-        {
-          latitude: location.latitude,
-          longitude: location.longitude,
-          weight: 1,
-          signalStrength: 18,
-        },
-      ],
-      [
-        {
-          latitude: 57.697631,
-          longitude: 11.984283,
-          weight: 1,
-          signalStrength: 90,
-        },
-      ],
-      [
-        {
-          latitude: 57.694977,
-          longitude: 11.991765,
-          weight: 1,
-          signalStrength: 80,
-        },
-      ],
-      [
-        {
-          latitude: 57.679818,
-          longitude: 11.998311,
-          weight: 1,
-          signalStrength: 70,
-        },
-      ],
-      [
-        {
-          latitude: 57.682326,
-          longitude: 12.011665,
-          weight: 1,
-          signalStrength: 60,
-        },
-      ],
-      [
-        {
-          latitude: 57.692592,
-          longitude: 11.983345,
-          weight: 1,
-          signalStrength: 50,
-        },
-      ],
-      [
-        {
-          latitude: 57.697658,
-          longitude: 11.990237,
-          weight: 1,
-          signalStrength: 40,
-        },
-      ],
-      [
-        {
-          latitude: 57.675599,
-          longitude: 11.998295,
-          weight: 1,
-          signalStrength: 30,
-        },
-      ],
-      [
-        {
-          latitude: 57.67696,
-          longitude: 12.014824,
-          weight: 1,
-          signalStrength: 20,
-        },
-      ],
-      [
-        {
-          latitude: 57.705729,
-          longitude: 11.987392,
-          weight: 1,
-          signalStrength: 0,
-        },
-      ],
-    ]);
+  async function loadHeatMap() {
+    const loadedHeatmap = await loadHeatmap();
+    console.log("heaetmap", loadedHeatmap.length);
+    if (loadedHeatmap !== null) setHeatMapPoints(loadedHeatmap);
+    else
+      setHeatMapPoints([
+        [
+          {
+            latitude: location.latitude,
+            longitude: location.longitude,
+            weight: 1,
+            signalStrength: 18,
+          },
+        ],
+        [
+          {
+            latitude: 57.697631,
+            longitude: 11.984283,
+            weight: 1,
+            signalStrength: 90,
+          },
+        ],
+        [
+          {
+            latitude: 57.694977,
+            longitude: 11.991765,
+            weight: 1,
+            signalStrength: 80,
+          },
+        ],
+        [
+          {
+            latitude: 57.679818,
+            longitude: 11.998311,
+            weight: 1,
+            signalStrength: 70,
+          },
+        ],
+        [
+          {
+            latitude: 57.682326,
+            longitude: 12.011665,
+            weight: 1,
+            signalStrength: 60,
+          },
+        ],
+        [
+          {
+            latitude: 57.692592,
+            longitude: 11.983345,
+            weight: 1,
+            signalStrength: 50,
+          },
+        ],
+        [
+          {
+            latitude: 57.697658,
+            longitude: 11.990237,
+            weight: 1,
+            signalStrength: 40,
+          },
+        ],
+        [
+          {
+            latitude: 57.675599,
+            longitude: 11.998295,
+            weight: 1,
+            signalStrength: 30,
+          },
+        ],
+        [
+          {
+            latitude: 57.67696,
+            longitude: 12.014824,
+            weight: 1,
+            signalStrength: 20,
+          },
+        ],
+        [
+          {
+            latitude: 57.705729,
+            longitude: 11.987392,
+            weight: 1,
+            signalStrength: 0,
+          },
+        ],
+      ]);
   }
 
   // Changes heatmap point color depending on the network signal strength (only works on WiFi)
